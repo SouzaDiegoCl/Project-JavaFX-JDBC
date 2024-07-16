@@ -53,7 +53,6 @@ public class DepartmentListController implements Initializable {
 	} 
 	
 	
-	
 	public void setDepartmentService(DepartmentService service) {
 		this.service = service;
 	}
@@ -89,6 +88,7 @@ public class DepartmentListController implements Initializable {
 			
 			DepartmentFormController controller = loader.getController();
 			controller.setDepartment(obj);
+			controller.setDepartmenService(new DepartmentService());
 			controller.updateFormData();
 			
 			Stage dialogStage = new Stage();

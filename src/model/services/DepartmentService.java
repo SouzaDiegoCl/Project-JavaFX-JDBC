@@ -18,8 +18,16 @@ public class DepartmentService {
 		list.add(new Department(3, "Eltrônicos"));
 		return list;
 		*/
-		
 		return dao.findAll();
+	}
+	
+	public void SaveOrUpdate(Department obj) {
+		if(obj.getId() == null) {
+			dao.insert(obj);
+		}
+		else {
+			dao.update(obj);
+		}
 	}
 	
 }
