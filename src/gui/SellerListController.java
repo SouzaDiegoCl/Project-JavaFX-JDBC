@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -39,13 +40,24 @@ public class SellerListController implements Initializable, DataChangeListener {
 
 	@FXML
 	private TableColumn<Seller, String> TableColumnName;
+	
+	@FXML
+	private TableColumn<Seller, String> TableColumnEmail;
+	
+	@FXML
+	private TableColumn<Seller, Date> TableColumnBirthDate;
+	
+	@FXML
+	private TableColumn<Seller, Double> TableColumnBaseSalary;
+
 
 	@FXML
 	private TableColumn<Seller, Seller> TableColumnEDIT;
 
 	@FXML
 	private TableColumn<Seller, Seller> TableColumnREMOVE;
-
+	
+	
 	@FXML
 	private Button btnNew;
 
@@ -71,7 +83,11 @@ public class SellerListController implements Initializable, DataChangeListener {
 	private void initializeNodes() {
 		TableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		TableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-
+		TableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		TableColumnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
+		TableColumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
+		Utils.formatTableColumnDate(TableColumnBirthDate, "dd/MM/yyyy");
+		Utils.formatTableColumnDouble(TableColumnBaseSalary, 2);
 		// Pega referencia da janela, window é superclasse do stage, por isso faz
 		// downcasting
 		Stage stage = (Stage) Main.getMainScene().getWindow();
