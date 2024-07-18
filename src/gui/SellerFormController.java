@@ -1,8 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -17,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Seller;
@@ -38,7 +42,25 @@ public class SellerFormController implements Initializable {
 	private TextField txtName;
 
 	@FXML
+	private TextField txtEmail;
+
+	@FXML
+	private DatePicker dpBirthDate;
+
+	@FXML
+	private TextField txtBaseSalary;
+
+	@FXML
 	private Label lblErrorName;
+
+	@FXML
+	private Label lblErrorEmail;
+
+	@FXML
+	private Label lblErrorBirthDate;
+
+	@FXML
+	private Label lblErrorBaseSalary;
 
 	@FXML
 	private Button btnSave;
@@ -73,8 +95,7 @@ public class SellerFormController implements Initializable {
 			Utils.currentStage(event).close();
 		} catch (DbException e) {
 			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
-		}
-		catch(ValidationException e) {
+		} catch (ValidationException e) {
 			setErrorMessages(e.getErrors());
 		}
 	}
@@ -96,10 +117,10 @@ public class SellerFormController implements Initializable {
 		}
 		obj.setName(txtName.getText());
 
-		if(exception.getErrors().size() > 0) {
+		if (exception.getErrors().size() > 0) {
 			throw exception;
 		}
-		
+
 		return obj;
 	}
 
@@ -116,7 +137,10 @@ public class SellerFormController implements Initializable {
 
 	private void intializeNodes() {
 		Constraints.setTextFieldInteger(txtId);
-		Constraints.setTextFieldMaxLength(txtName, 30);
+		Constraints.setTextFieldMaxLength(txtName, 70);
+		Constraints.setTextFieldDouble(txtBaseSalary);
+		Constraints.setTextFieldMaxLength(txtEmail, 70);
+		Utils.formatDatePicker(dpBirthDate, "dd/MM/yyyy");
 	}
 
 	public void updateFormData() {
@@ -125,12 +149,25 @@ public class SellerFormController implements Initializable {
 		}
 		txtId.setText(String.valueOf(entity.getId()));
 		txtName.setText(entity.getName());
+		txtEmail.setText(entity.getEmail());
+		Locale.setDefault(Locale.US);
+		txtBaseSalary.setText(String.format("%.2f", entity.getBaseSalary()));
+		if (entity.getBirthDate() != null) {
+			dpBirthDate.setValue(LocalDate.ofInstant(entity.getBirthDate().toInstant(), ZoneId.systemDefault()));
+		}
+		// O DatePicker trabalha com LocalDate enquanto o objeto entity guarda um
+		// Java.util.Date, isso ocorre porque no banco de dados armazenamos data
+		// independente da localidade do pc, enquanto na tela exibiremos a data de
+		// acordo com a zona do usuário
+		// LocalDate.ofInstant(1°ARG: Instant, por isso transforma o entity.getBirthDate
+		// em Instant; 2°ARG: Time-zone, aqui estamos pegando o timezone do usuário
+
 	}
 
 	private void setErrorMessages(Map<String, String> errors) {
 		Set<String> fields = errors.keySet();
-		
-		if(fields.contains("name")){
+
+		if (fields.contains("name")) {
 			lblErrorName.setText(errors.get("name"));
 		}
 	}
